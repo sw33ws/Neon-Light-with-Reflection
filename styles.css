@@ -1,0 +1,106 @@
+:root {
+    --neon-blue: rgb(20, 220, 255);
+    --neon-background: rgb(32, 45, 49);
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    font-family: "Balsamiq Sans", cursive;
+    background: var(--neon-background);
+    color: var(--neon-blue);
+}
+
+/* the button */
+.neon-button {
+    font-size: 4rem;
+    /* This position makes sure the pseudo element, the reflection doesn't move the button */
+    position: relative;
+
+    display: inline-block;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--neon-blue);
+    /* if you make the border color currentcolor instead, of the var, it won't change on hover */
+    border: var(--neon-blue) .125em solid; 
+    padding: .25em 1em;
+    border-radius: 0.25em;
+
+    /* adding the neon light to the text */
+    text-shadow: 
+        0 0 0.125em rgb(255, 255, 255, 0.5),
+        0 0 0.125em currentColor ;
+    
+    /* adding the neon light to the border */
+    box-shadow: 
+        /* inset adds the shadow to the inside of the element */
+        inset 0 0 0.5em 0 var(--neon-blue),
+        0 0 0.5em 0 var(--neon-blue);
+}
+
+/* the reflection */
+.neon-button::before {
+    /* this makes it so if you hover the reflection, it won't trigger the reflection */
+    pointer-events: none;
+    content: '';
+    /* positioning the reflection */
+    position: absolute;
+    background: var(--neon-blue);
+    top: 120%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    /* making the reflection */
+    transform: 
+        /* perspective is needed to "stretch" it out */
+        perspective(1em) 
+        /* rotate is just moving the rectangle backwards, this along with the warped perspective makes it take the shape it is */
+        rotateX(40deg)
+        /* scale makes it brighter at the start, and dim at the end */
+        scale(1, 0.35);
+    
+    /* the blur is what changes the effect and allows it to glow, rather then just being a tilted box */
+    filter: blur(1.5em);
+    opacity: 0.7;
+}
+
+/* focus is for keyboard only users */
+.neon-button:hover, .neon-button:focus {
+    background: var(--neon-blue);
+    color: var(--neon-background);
+    text-shadow: none;
+}
+
+/* this is the larger reflection that appears on hover */
+.neon-button::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    box-shadow: 0 0 2em 0.5em var(--neon-blue);
+    /* this makes it so it won't show up until hover */
+    opacity: 0;
+    /* adding a timer so the reflection doesn't instantly appear */
+    transition: opacity 100ms linear;
+    /* this makes it so the text also comes in at the same speed */
+    background-color: var(--neon-blue);
+    z-index: -1;
+}
+
+/* making the larger reflection appear on hover and focus */
+.neon-button:hover::after, .neon-button:focus::after {
+    opacity: 1;
+}
+
+/* making the reflection before grow larger, as its default opacity was 0.7 */
+.neon-button:hover::before, .neon-button:focus::before  {
+    opacity: 1;
+}
